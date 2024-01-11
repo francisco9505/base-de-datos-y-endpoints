@@ -8,7 +8,7 @@ from flask_swagger import swagger
 from flask_cors import CORS
 from utils import APIException, generate_sitemap
 from admin import setup_admin
-from models import db, User
+from models import db, User,People,Planets
 #from models import Person
 
 app = Flask(__name__)
@@ -42,6 +42,54 @@ def handle_hello():
     response_body = {
         "msg": "Hello, this is your GET /user response "
     }
+
+    return jsonify(response_body), 200
+
+
+@app.route('/people', methods=['GET'])
+def people():
+    people_list = People.query.all() 
+    response_body = [people.serialize() for people in people_list]
+
+    return jsonify(response_body), 200
+
+
+@app.route('/people/<int:people_id>', methods=['GET'])
+def get_unique_people(people_id):
+    people_list = People.query.filter_by(id=people_id) 
+    response_body = [people.serialize() for people in people_list]
+
+    return jsonify(response_body), 200
+
+
+@app.route('/planets', methods=['GET'])
+def planets():
+    planets_list = Planets.query.all() 
+    response_body = [planets.serialize() for planets in planets_list]
+
+    return jsonify(response_body), 200
+
+@app.route('/planets/<int:planets_id>', methods=['GET'])
+def get_unique_planets(planets_id):
+    people_list = Planets.query.filter_by(id=planets_id) 
+    response_body = [planets.serialize() for planets in planets_list]
+
+    return jsonify(response_body), 200    
+
+
+
+@app.route('/add_planet', methods=['POST'])
+def add_planet():
+    new_planet_data = request.json  
+    response_body = {
+        "msg": "planeta agregado"
+    }
+    return jsonify(response_body), 201          
+
+@app.route('/add_planet', methods=['GET'])
+def favorite_planet():
+    add_planet = Planets.query.all() 
+    response_body = [planets.serialize() for planets in add_planet]
 
     return jsonify(response_body), 200
 
